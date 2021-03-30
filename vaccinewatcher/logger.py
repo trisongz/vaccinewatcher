@@ -74,6 +74,9 @@ class WatcherLogger:
             msg = str(msg)
         self.logger.info(msg)
     
+    def info(self, *args, **kwargs):
+        return self.logger.info(*args, **kwargs)
+
     def log(self, *args, **kwargs):
         return self.logger.info(*args, **kwargs)
 
