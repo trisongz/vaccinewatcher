@@ -7,7 +7,7 @@ Monitor Vaccine Availability from your Local CVS and Walgreens (US Only).
 
 *Disclaimer: This library is provided as is. It involves some minor browser tricks in order to properly get the availability data. Use at your own risk.*
 
-Originally inspired from [Vaccine-hunter.js](https://github.com/mikeendale/vaccine-hunter), I wanted to write a pythonic version of it.
+Originally inspired from [Vaccine-hunter.js](https://github.com/mikeendale/vaccine-hunter), I wanted to write a pythonic version of it. Somewhat ironically, right after publishing and running it, availability popped up.
 
 ## What does it do
 
@@ -133,6 +133,9 @@ class ZapierWebhook:
 ```
 
 # Final Notes
+
+
+![vaccine-appt](etc/confirmation.png)
 
 If you found this library helpful, please do share it with others. This is what is within my capabilities to help provide a resource and tool to allow others to find vaccine availibility, and help bring an end to the pandemic. If you end up using some parts of this library for something bigger, let me know! I'd love to check it out.
 

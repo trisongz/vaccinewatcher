@@ -97,6 +97,10 @@ _wg_steps = [
     'https://www.walgreens.com/',
     'https://www.walgreens.com/findcare/vaccination/covid-19?ban=covid_scheduler_brandstory_main_March2021',
 ]
+_avail_links = {
+    'cvs': 'https://www.cvs.com/vaccine/intake/store/cvd-schedule?icid=coronavirus-lp-vaccine-sd-statetool',
+    'wg': 'https://www.walgreens.com/login.jsp?ru=%2Ffindcare%2Fvaccination%2Fcovid-19%2Feligibility-survey%3Fflow%3Dcovidvaccine%26register%3Drx'
+}
 
 class VaccineWatcher:
     def __init__(self, config, freq_secs=600, hook=None, check_walgreens=True, check_cvs=True, send_data=True, always_send=False, verbose=False):
@@ -120,6 +124,7 @@ class VaccineWatcher:
         self._last_status['walgreens']['data'] = data
         if data.get('appointmentsAvailable') and data['appointmentsAvailable']:
             msg = f'Walgreens has Available Appointments: {data["availabilityGroups"]} for Next {data["days"]} in {data["zipCode"]}, {data["stateCode"]} in {data["radius"]} mile radius'
+            msg += f'\nPlease Visit: {_avail_links["wg"]} to schedule.'
             self._call_hook(msg)
             logger.log(msg)
             return True
@@ -152,6 +157,7 @@ class VaccineWatcher:
                 self._last_status['cvs']['data'] = item
                 if item['status'] == 'Available':
                     msg = f'CVS has Available Appointments in {item["city"]}, {item["state"]}'
+                    msg += f'\nPlease Visit: {_avail_links["cvs"]} to schedule.'
                     self._call_hook(msg)
                     logger.log(msg)
                     return True
