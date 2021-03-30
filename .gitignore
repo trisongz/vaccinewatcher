@@ -1,0 +1,12 @@
+
+vaccinewatcher.egg-info*
+*.vscode
+*cache
+*__pycache__
+*__data__*
+*__cache__*
+*dist
+*build*
+build.sh
+*pyproject.toml
+*.DS_Store*
