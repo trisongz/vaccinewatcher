@@ -40,7 +40,6 @@ setup(
             "vaccinewatcher = vaccinewatcher.watcher:cli",
         ]
     },
-    entry_points={},
     classifiers=[
         "Development Status :: 3 - Alpha",
         "Environment :: Console",
