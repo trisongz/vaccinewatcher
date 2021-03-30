@@ -44,6 +44,10 @@ brew install chromedriver
 `vaccinewatcher` is on currently only available on Github since it's not stable yet:
 
 ```bash
+# from pypi
+pip install --upgrade vaccinewatcher
+
+# from src
 pip install --upgrade git+https://github.com/trisongz/vaccinewatcher
 ```
 
