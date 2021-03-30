@@ -58,6 +58,7 @@ If you have a lower-spec device, I would suggest increasing the frequency, since
 # --no-wg / disables Walgreens polling
 # --freq / how many secs between polling. default = 600 secs / 10 mins
 # --zapier / provide a Zapier Webhook URL to send notifications to
+# --verbose / enable logging for all results, regardless of options.
 
 # make sure if you have multiple words in any variable to have them in quotations.
 vaccinewatcher --city "Houston" --state "Texas" --abbr "TX" --zip "77056"
