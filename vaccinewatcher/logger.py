@@ -9,7 +9,7 @@ from typing import Optional
 _lock = threading.Lock()
 _logger_handler: Optional[logging.Handler] = None
 
-if os.environ['ENABLE_WATCHER_DEBUG']:
+if os.environ.get('ENABLE_WATCHER_DEBUG', None):
     logging.getLogger('undetected_chromedriver').level = logging.INFO
 
 class LogFormatter(logging.Formatter):
