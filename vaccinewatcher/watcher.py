@@ -9,7 +9,7 @@ from subprocess import check_output
 from dataclasses import dataclass
 from datetime import datetime
 import argparse
-
+import gc
 from . import get_logger
 
 logger = get_logger()
@@ -40,9 +40,19 @@ class Browser:
             'exclude_hosts': ['google-analytics.com', 'facebook.com', 'youtube.com', 'adservice.google.com', 'insight.adsrvr.org']
         }
         self.exec_path = run_command('which chromedriver')
-
         self._driver = None
         self._browser = None
+        self._calls = 0
+    
+    def should_reset(self):
+        if self._calls > 10:
+            self._reset()
+            self._calls = 0
+        self._calls += 1
+
+    def _reset(self):
+        self._create_driver()
+        self._create_browser()
     
     def _create_driver(self):
         if self._driver:
@@ -73,6 +83,7 @@ class Browser:
         self._driver.quit()
         self._driver = None
         self._browser = None
+        gc.collect()
     
 
 @dataclass
@@ -88,12 +99,13 @@ _wg_steps = [
 ]
 
 class VaccineWatcher:
-    def __init__(self, config, freq_secs=600, hook=None, check_walgreens=True, check_cvs=True, send_data=True, always_send=False):
+    def __init__(self, config, freq_secs=600, hook=None, check_walgreens=True, check_cvs=True, send_data=True, always_send=False, verbose=False):
         self.config = Config(**config)
         self.freq = freq_secs
         self.send_data = send_data
         self.always_send = always_send
         self.hook = hook
+        self.verbose = verbose
         self._last_status = {'walgreens': {'available': False, 'data': None, 'timestamp': None}, 'cvs': {'available': False, 'data': None, 'timestamp': None}}
         self._check_wg = check_walgreens
         self._check_cvs = check_cvs
@@ -111,7 +123,9 @@ class VaccineWatcher:
             self._call_hook(msg)
             logger.log(msg)
             return True
-
+        if self.verbose:
+            msg = f'Result for Walgreens: {data}'
+            logger.log(msg)
         return False
     
     def check_wg(self):
@@ -139,8 +153,11 @@ class VaccineWatcher:
                 if item['status'] == 'Available':
                     msg = f'CVS has Available Appointments in {item["city"]}, {item["state"]}'
                     self._call_hook(msg)
-                    logger.info(msg)
+                    logger.log(msg)
                     return True
+                if self.verbose:
+                    msg = f'Results for CVS: {item}'
+                    logger.log(msg)
                 return False 
 
     def check_cvs(self):
@@ -187,6 +204,7 @@ class VaccineWatcher:
                 self._last_status['walgreens']['available'] = self.check_wg()
                 self._last_status['walgreens']['timestamp'] = create_timestamp()
             self._call_hook()
+            self.api.should_reset()
             time.sleep(self.freq)
 
     def __call__(self, check_walgreens=True, check_cvs=True):
@@ -260,12 +278,13 @@ def cli():
 
     parser.add_argument('--no-cvs', dest='cvs', default=True, action='store_false', help='Disable CVS Search.')
     parser.add_argument('--no-wg', dest='wg', default=True, action='store_false', help='Disable Walgreens Search.')
+    parser.add_argument('--verbose', dest='verbose', default=False, action='store_true', help='Enable verbosity. Will log results regardless of status')
     args = parser.parse_args()
     params = {'city': args.city.capitalize(), 'state': args.state.capitalize(), 'state_abbr': args.state_abbr.upper(), 'zipcode': args.zipcode}
     hook = None
     if args.zapierhook:
         hook = ZapierWebhook(args.zapierhook)
-    watcher = get_vaccine_watcher(config=params, freq_secs=args.freq, hook=hook, check_walgreens=args.wg, check_cvs=args.cvs)
+    watcher = get_vaccine_watcher(config=params, freq_secs=args.freq, hook=hook, check_walgreens=args.wg, check_cvs=args.cvs, verbose=args.verbose)
     watcher.run()
     while True:
         try:

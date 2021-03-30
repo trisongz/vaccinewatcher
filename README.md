@@ -2,6 +2,9 @@
 
 Monitor Vaccine Availability from your Local CVS and Walgreens (US Only).
 
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/trisongz/vaccinewatcher/blob/master/etc/Vaccine_Watcher.ipynb) 
+
+
 *Disclaimer: This library is provided as is. It involves some minor browser tricks in order to properly get the availability data. Use at your own risk.*
 
 Originally inspired from [Vaccine-hunter.js](https://github.com/mikeendale/vaccine-hunter), I wanted to write a pythonic version of it.
@@ -14,6 +17,13 @@ Originally inspired from [Vaccine-hunter.js](https://github.com/mikeendale/vacci
 It currently polls CVS and Walgreen's Website through a modified Selenium called [Selenium-wire](https://github.com/wkeeling/selenium-wire) to be able to access the headers and parse the response data. Both CVS and Walgreens use different detectors/cookies in order to determine your location, so using plain requests/sessions was a bit problematic. 
 
 This method was the one that ensured consistency no matter which location.
+
+Hopefully, you'll see something like this:
+
+
+```bash
+[VaccineWatcher] info : CVS has Available Appointments in HOUSTON, TX
+```
 
 ## Prerequisites
 
