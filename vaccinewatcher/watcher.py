@@ -169,7 +169,7 @@ class VaccineWatcher:
     def check_cvs(self):
         self.browser.visit('https://www.cvs.com/')
         time.sleep(1)
-        self.browser.get_element(partial_link_text="Check vaccine availability").click()
+        self.browser.get_element(partial_link_text="Schedule a COVID-19 vaccine").click()
         self.browser.get_element(partial_link_text=self.config.state).click()
         reqs = self.browser.selenium_webdriver.requests
         for r in reqs:
