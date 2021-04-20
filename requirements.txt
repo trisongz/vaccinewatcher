@@ -1,0 +1,4 @@
+selenium==3.141.0
+selenium-wire==4.2.4
+undetected-chromedriver==2.2.1
+elemental==0.4.0
