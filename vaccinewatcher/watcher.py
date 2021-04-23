@@ -172,6 +172,7 @@ class VaccineWatcher:
         time.sleep(1)
         self.browser.get_element(partial_link_text="Schedule a COVID-19 vaccine").click()
         self.browser.get_element(id='selectstate').get_element(value=self.config.state_abbr).select()
+        self.browser.get_button(text="Get started").click()
         reqs = self.browser.selenium_webdriver.requests
         for r in reqs:
             if r.response:
