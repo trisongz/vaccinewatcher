@@ -5,13 +5,12 @@ import elemental
 import threading
 import requests
 from seleniumwire import webdriver
-from selenium.webdriver.support.ui import Select
 from subprocess import check_output
 from dataclasses import dataclass
 from datetime import datetime
 import argparse
 import gc
-from logger import get_logger
+from . import get_logger
 
 logger = get_logger()
 
@@ -27,6 +26,25 @@ def run_command(cmd):
 def create_timestamp():
     return datetime.now().strftime('%m-%d-%Y %H:%M:%S')
 
+
+def get_platform(): #determines which chromedriver command to use
+    platforms = {
+        'linux1': 'Linux',
+        'linux2': 'Linux',
+        'darwin': 'OS X',
+        'win32': 'Windows'
+    }
+    if sys.platform not in platforms:
+        print(sys.platform)
+
+    if platforms[sys.platform] == "Windows":
+         c_driver = 'where chromedriver'
+    else:
+        c_driver = 'which chromedriver'
+
+    return c_driver
+
+
 class Browser:
     def __init__(self):
         self.chrome_options = webdriver.ChromeOptions()
@@ -40,7 +58,8 @@ class Browser:
         self.selenium_wire_options = {
             'exclude_hosts': ['google-analytics.com', 'facebook.com', 'youtube.com', 'adservice.google.com', 'insight.adsrvr.org']
         }
-        self.exec_path = run_command('which chromedriver')
+
+        self.exec_path = run_command(get_platform())
         self._driver = None
         self._browser = None
         self._calls = 0
@@ -99,7 +118,7 @@ _wg_steps = [
     'https://www.walgreens.com/findcare/vaccination/covid-19?ban=covid_scheduler_brandstory_main_March2021',
 ]
 _avail_links = {
-    'cvs': 'https://www.cvs.com//vaccine/intake/store/cvd-schedule.html?icid=coronavirus-lp-vaccine-sd-statetool',
+    'cvs': 'https://www.cvs.com/immunizations/covid-19-vaccine?icid=cvs-home-hero1-link2-coronavirus-vaccine',
     'wg': 'https://www.walgreens.com/findcare/vaccination/covid-19?ban=covid_scheduler_brandstory_main_March2021'
 }
 
@@ -171,8 +190,7 @@ class VaccineWatcher:
         self.browser.visit('https://www.cvs.com/')
         time.sleep(1)
         self.browser.get_element(partial_link_text="Schedule a COVID-19 vaccine").click()
-        self.browser.get_element(id='selectstate').get_element(value=self.config.state_abbr).select()
-        self.browser.get_button(text="Get started").click()
+        self.browser.get_element(partial_link_text=self.config.state).click()
         reqs = self.browser.selenium_webdriver.requests
         for r in reqs:
             if r.response:
