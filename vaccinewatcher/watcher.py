@@ -5,12 +5,13 @@ import elemental
 import threading
 import requests
 from seleniumwire import webdriver
+from selenium.webdriver.support.ui import Select
 from subprocess import check_output
 from dataclasses import dataclass
 from datetime import datetime
 import argparse
 import gc
-from . import get_logger
+from logger import get_logger
 
 logger = get_logger()
 
@@ -98,7 +99,7 @@ _wg_steps = [
     'https://www.walgreens.com/findcare/vaccination/covid-19?ban=covid_scheduler_brandstory_main_March2021',
 ]
 _avail_links = {
-    'cvs': 'https://www.cvs.com/immunizations/covid-19-vaccine?icid=cvs-home-hero1-link2-coronavirus-vaccine',
+    'cvs': 'https://www.cvs.com//vaccine/intake/store/cvd-schedule.html?icid=coronavirus-lp-vaccine-sd-statetool',
     'wg': 'https://www.walgreens.com/findcare/vaccination/covid-19?ban=covid_scheduler_brandstory_main_March2021'
 }
 
@@ -170,7 +171,8 @@ class VaccineWatcher:
         self.browser.visit('https://www.cvs.com/')
         time.sleep(1)
         self.browser.get_element(partial_link_text="Schedule a COVID-19 vaccine").click()
-        self.browser.get_element(partial_link_text=self.config.state).click()
+        self.browser.get_element(id='selectstate').get_element(value=self.config.state_abbr).select()
+        self.browser.get_button(text="Get started").click()
         reqs = self.browser.selenium_webdriver.requests
         for r in reqs:
             if r.response:

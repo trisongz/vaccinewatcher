@@ -36,7 +36,8 @@ apt-get install chromedriver
 # macos - this may cause issues if your Chrome Browser =/= to your Chromedriver version.
 brew install chromedriver
 
-# windows - sorry, I don't know.
+# windows - from the CMD
+pip install chromedriver
 ```
 
 ## Installation
