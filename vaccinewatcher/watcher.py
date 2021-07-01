@@ -145,9 +145,12 @@ class VaccineWatcher:
         time.sleep(1)
         reqs = self.browser.selenium_webdriver.requests
         for r in reqs:
-            if r.response:
-                if '/hcschedulersvc/svc/v1/immunizationLocations/availability' in r.url:
-                    return self._wg_parser(r.response)
+            if (
+                r.response
+                and '/hcschedulersvc/svc/v1/immunizationLocations/availability'
+                in r.url
+            ):
+                return self._wg_parser(r.response)
         return None
 
     def _cvs_parser(self, resp):
@@ -173,9 +176,12 @@ class VaccineWatcher:
         self.browser.get_element(partial_link_text=self.config.state).click()
         reqs = self.browser.selenium_webdriver.requests
         for r in reqs:
-            if r.response:
-                if 'https://www.cvs.com/immunizations/covid-19-vaccine.vaccine-status' in r.url:
-                    return self._cvs_parser(r.response)
+            if (
+                r.response
+                and 'https://www.cvs.com/immunizations/covid-19-vaccine.vaccine-status'
+                in r.url
+            ):
+                return self._cvs_parser(r.response)
         return None
 
     def run(self):
@@ -258,12 +264,7 @@ class ZapierWebhook:
     def __call__(self, message=None, data=None):
         if not message or data:
             return
-        params = {}
-        if message:
-            params['message'] = message
-        if data:
-            params.update(data)
-        params['timestamp'] = create_timestamp()
+        params = {'message': message, 'timestamp': create_timestamp()}
         r = self.s.post(self.url, json=params)
         if r.status_code == 200:
             logger.log(f'Successfully sent to Zapier Webhook: {params}')
