@@ -94,8 +94,7 @@ def _setup_library_root_logger(name):
         'logfile_log_color': False,
         'log_line_template': f"%(color_on)s[{name}] %(funcName)-5s%(color_off)s: %(message)s"
     }
-    logger = WatcherLogger(logger_config)
-    return logger
+    return WatcherLogger(logger_config)
 
 
 def _configure_library_root_logger(name="VaccineWatcher") -> None:
